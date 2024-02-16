@@ -1,0 +1,11 @@
+{
+  "name": "intermaracaibobackend",
+  "version": "1.0.0",
+  "description": "Backend del programa administrativo para el InterMaracaibo Hotel & Casino",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Giovanna A. Rotolo Silano",
+  "license": "ISC"
+}
