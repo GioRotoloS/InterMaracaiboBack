@@ -6,7 +6,7 @@ const app = express();
 //BD conection
 
 
-const routes = require('./src/routes');
+//const routes = require('./src/routes');
 
 app.disable('x-powered-by');
 app.use(express.json({ 'limit': '5mb' }));
@@ -19,6 +19,9 @@ app.all('*', function (_, res, next) {
 	next();
 });
 
-app.use('/api', routes);
+//app.use('/api', routes);
+app.get("/api", (req, res) => {
+	res.json({ message: "Hello from Server!"});
+});
 
 module.exports = app;
