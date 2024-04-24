@@ -1,12 +1,13 @@
 const express = require('express');
-
 require('dotenv').config();
 const app = express();
+
 
 //BD conection
 
 
-//const routes = require('./src/routes');
+//Routes
+const routes = require('./src/routes');
 
 app.disable('x-powered-by');
 app.use(express.json({ 'limit': '5mb' }));
@@ -19,9 +20,7 @@ app.all('*', function (_, res, next) {
 	next();
 });
 
-//app.use('/api', routes);
-app.get("/api", (req, res) => {
-	res.json({ message: "Hello from Server!"});
-});
+//Api main route
+app.use('/api', routes);
 
 module.exports = app;
