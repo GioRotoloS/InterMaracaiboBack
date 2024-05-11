@@ -5,7 +5,9 @@ const jwt = require("jsonwebtoken");
 //Ver todos los Usuarios
 module.exports.getUsers = async (req, res) => {
 
-  db.query('SELECT * FROM yushu.users', (err,data)=>{
+  const q = "SELECT * FROM yushu.users";
+
+  db.query(q, (err,data)=>{
     if(err) return res.status(500).json(err)
 
     return res.status(200).json(data)
@@ -16,26 +18,16 @@ module.exports.getUsers = async (req, res) => {
 //Registrar
 module.exports.register = async (req, res) => {
 
-    const userfind = await User.findOne({email: req.body.email});
-    try {
-        if(userfind){
-          res.status(404).json("User already exist");
-        } else{
-          const salt = bcrypt.genSaltSync(10);
-          const hash = bcrypt.hashSync(req.body.pass, salt);
-  
-          const user = new User({
-            name: req.body.name,
-            email: req.body.email,
-            pass: hash,
-            created_at: req.body.created_at
-          });
-  
-          const inserteduser = await user.save();
-          res.status(201).json(inserteduser);
-          
-        }
-    } catch (error) {
-        res.status(400).json({message: error.message});
-    }
-  }
+  //Revisar si existe un registro con ese usuario
+  const q = "SELECT * FROM yushu.users WHERE User = ? OR Ci = ?";
+
+  db.query(q, [req.body.user, req.body.ci], (err, data)=>{
+    if (data.length) return res.status(409).json("User already exist");
+
+    //Encriptar la contraseña y crear el usuario
+    const salt = bcrypt.genSaltSync(10);
+    const hash = bcrypt.hashSync(req.body.pass, salt);
+
+    const u = ""
+  })
+}
