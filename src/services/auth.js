@@ -19,15 +19,62 @@ module.exports.getUsers = async (req, res) => {
 module.exports.register = async (req, res) => {
 
   //Revisar si existe un registro con ese usuario
-  const q = "SELECT * FROM yushu.users WHERE User = ? OR Ci = ?";
+  const q = "SELECT * FROM yushu.users WHERE user = ? OR id = ?";
 
-  db.query(q, [req.body.user, req.body.ci], (err, data)=>{
-    if (data.length) return res.status(409).json("User already exist");
+  db.query(q, [req.body.user, req.body.id], (err, data)=>{
+    if(err) return res.json(err);
+
+    if(data.length) return res.status(409).json("User already exist");
 
     //Encriptar la contraseña y crear el usuario
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(req.body.pass, salt);
 
-    const u = ""
+    const u = "INSERT INTO yushu.users(Id, User, Password, FirstName, SecondName,  FirstLastName, SecondLastName) VALUE (?)";
+
+    const values = [
+      req.body.id,
+      req.body.user,
+      hash,
+      req.body.firstname,
+      req.body.secondname,
+      req.body.firstlastname,
+      req.body.secondlastname,
+    ]
+
+    db.query(u, [values], (err, data)=>{
+      if(err) return res.json(err);
+
+      return res.status(201).json("Se ha creado el usuario con exito.");
+    })
   })
+}
+
+//Autenticar
+module.exports.login = async (req, res) => {
+
+  //Chequear si el usuario existe
+  const q = "SELECT * FROM yushu.users WHERE user = ?";
+
+  db.query(q, [req.body.user], (err, data) => {
+    if(err) return res.json(err);
+
+    if(data.length === 0) return res.status(404).json("Usuario no existe o esta mal escrito");
+
+    //Chequear si la contraseña esta correcta
+    const isPasswordCorrect = bcrypt.compareSync(req.body.pass, data[0].Pass);
+
+    if(!isPasswordCorrect) return res.status(404).json("Contraseña incorrecta o esta mal escrita");
+
+   return res.status(200).json("Inicio de Sesion exitoso"); 
+
+  });
+}
+
+//Cerrar Sesion
+
+
+//Actualizar
+module.exports.update = async (req, res) => {
+  
 }
