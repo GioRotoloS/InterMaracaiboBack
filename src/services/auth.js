@@ -64,17 +64,32 @@ module.exports.login = async (req, res) => {
     //Chequear si la contraseña esta correcta
     const isPasswordCorrect = bcrypt.compareSync(req.body.pass, data[0].Pass);
 
-    if(!isPasswordCorrect) return res.status(404).json("Contraseña incorrecta o esta mal escrita");
+    if(!isPasswordCorrect) return res.status(400).json("Contraseña incorrecta");
 
-   return res.status(200).json("Inicio de Sesion exitoso"); 
+    const token = jwt.sign({ id: data[0].id}, "jwtkey");
+    const user = {
+      user: req.body.user,
+      token
+    }
+
+    res.cookie("access_token", token, {
+      httpOnly: true,
+    }).status(200).json(user);
 
   });
 }
 
 //Cerrar Sesion
-
+module.exports.logout = (req, res) => {
+  res.clearCookie("access_token", {
+    sameSite: "none",
+    secure: true
+  }).status(200).json("Usuario ha cerrado sesion")
+}
 
 //Actualizar
 module.exports.update = async (req, res) => {
   
+
+
 }
