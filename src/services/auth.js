@@ -30,7 +30,7 @@ module.exports.register = async (req, res) => {
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(req.body.pass, salt);
 
-    const u = "INSERT INTO yushu.users(Id, User, Password, FirstName, SecondName,  FirstLastName, SecondLastName) VALUE (?)";
+    const u = "INSERT INTO yushu.users(Id, User, Pass, FirstName, SecondName,  FirstLastName, SecondLastName) VALUE (?)";
 
     const values = [
       req.body.id,
@@ -45,7 +45,7 @@ module.exports.register = async (req, res) => {
     db.query(u, [values], (err, data)=>{
       if(err) return res.json(err);
 
-      return res.status(201).json("Se ha creado el usuario con exito.");
+      return res.json({message: "Se ha creado el usuario con exito."});
     })
   })
 }
