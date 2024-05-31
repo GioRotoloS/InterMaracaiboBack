@@ -24,7 +24,7 @@ module.exports.register = async (req, res) => {
   db.query(q, [req.body.user, req.body.id], (err, data)=>{
     if(err) return res.json(err);
 
-    if(data.length) return res.status(409).json("User already exist");
+    if(data.length) return res.status(409).json("Usuario ya existe");
 
     //Encriptar la contraseña y crear el usuario
     const salt = bcrypt.genSaltSync(10);
@@ -45,7 +45,7 @@ module.exports.register = async (req, res) => {
     db.query(u, [values], (err, data)=>{
       if(err) return res.json(err);
 
-      return res.json({message: "Se ha creado el usuario con exito."});
+      return res.status(201).json("Se ha creado el usuario con exito.");
     })
   })
 }
