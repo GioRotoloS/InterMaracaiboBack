@@ -19,7 +19,7 @@ module.exports.getUsers = async (req, res) => {
 module.exports.register = async (req, res) => {
 
   //Revisar si existe un registro con ese usuario
-  const q = "SELECT * FROM yushu.users WHERE user = ? OR id = ?";
+  const q = "SELECT * FROM yushu.users WHERE User = ? OR Id = ?";
 
   db.query(q, [req.body.user, req.body.id], (err, data)=>{
     if(err) return res.json(err);
@@ -92,4 +92,27 @@ module.exports.update = async (req, res) => {
   
 
 
+}
+
+//Eliminar
+module.exports.deleteUser = async (req, res) => {
+
+//Revisar si existe un registro con ese usuario
+  const q = "SELECT * FROM yushu.users WHERE Id = ? OR User = ?";
+
+  db.query(q, [req.body.user, req.body.id], (err, data)=>{
+
+    if(err) return res.json(err);
+
+    if(data.length === 0) return res.status(409).json("Usuario no existe o esta mal escrito");
+
+    //Eliminar usuario
+    const u = "DELETE FROM yushu.users WHERE Id = ? AND User = ?";
+
+    db.query(u, [req.body.id, req.body.user], (err, data) => {
+      if(err) return res.status(403).json("Nose pudo eliminar el usuario");
+
+      return res.status(201).json("Usuario se ha eliminado correctamente");
+    })
+  })
 }
